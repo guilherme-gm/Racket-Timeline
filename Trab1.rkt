@@ -89,9 +89,9 @@
 )
 
 ; Listar
-(define (listar) (display (foldl listar-aux "" (getLista posts))))
+(define (listar) (display (foldl formata-post "" (getLista posts))))
 
-(define (listar-aux item acc)
+(define (formata-post item acc)
   (string-join (list acc
                      "#" (number->string (id item)) "\n"
                      "  @" (autor item) "\t\t\tdia " (number->string (dia item)) "\n"
