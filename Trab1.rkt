@@ -1,5 +1,7 @@
 #lang racket
 (require racket/trace)
+(require racket/include)
+(include gui.rkt)
 
 (define posts
     ; ID TEXTO AUTOR DATA CATEGORIA LIKES
