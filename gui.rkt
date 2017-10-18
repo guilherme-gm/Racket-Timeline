@@ -77,14 +77,16 @@
 (new button%
     [parent post-panel]
     [label "Postar"]
+    [callback (λ (button event) (send timeline-panel change-children (λ(x) (list (cria-post "tese")))))]
 )
 
 ; ============ Timeline =================
 ; Nova mensagem
-(define post)
-(new message%
-    [parent timeline-panel]
-    [label "Mensagem"]
+(define (cria-post mensagem)
+    (new message%
+        [parent timeline-panel]
+        [label mensagem]
+    )
 )
 (new message%
     [parent timeline-panel]
