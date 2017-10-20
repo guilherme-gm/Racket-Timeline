@@ -12,6 +12,12 @@
 (provide postar)
 (provide like)
 (provide seta-categoria)
+(provide ignorarCat)
+(provide designorarCat)
+(provide ignorarAutor)
+(provide autorIgnorado)
+(provide catIgnorada)
+(provide nome)
 
 (define posts
     ; ID TEXTO AUTOR DATA CATEGORIA LIKES
@@ -80,9 +86,7 @@
 )
 
 (define catIgnorada '())
-(define catFavorita '())
 (define autorIgnorado '())
-(define autorFavorito '())
 
 (define (éIgnorado? post)
   (not (and (equal? (member (categoria post) catIgnorada) #f)
@@ -117,6 +121,15 @@
 
 ; Ignorar categoria
 (define (ignorarCat cat) (begin (set! catIgnorada (append (list cat) catIgnorada)) (listar)))
+
+; Designirar Categoria
+(define (designorarCat cat)
+  (set! catIgnorada
+    (foldl (λ (x acc) (if (equal? x cat) acc (append (list x) acc))) '() catIgnorada
+    )
+  )
+  (listar)
+)
 
 ; Ignorar autor
 (define (ignorarAutor autor) (begin (set! autorIgnorado (append (list autor) autorIgnorado)) (listar)))

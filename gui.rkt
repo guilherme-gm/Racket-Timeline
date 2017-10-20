@@ -80,17 +80,39 @@
     [parent prof-panel]
     [label "👨"]
 )
-(new text-field%
+(new message%
     [parent prof-panel]
-    [label ""]
-    [init-value "John Doe"]
+    [label nome]
 )
 
 ; ============== Ignorados ==============
-(new text-field%
+(define autor-ignorado
+    (new list-box%
+        [parent ignore-panel]
+        [label "Autores Ignorados\n"]
+        [choices autorIgnorado]
+    )
+)
+
+;;; (new button%
+;;;     [parent p1]
+;;;     [label "✓"]
+;;;     [callback (λ (button event) (designorarAutor (autor item)) (listar)) ]
+;;; )
+
+(define cat-ignorada
+    (new list-box%
+        [parent ignore-panel]
+        [label "Categorias Ignoradas"]
+        [choices catIgnorada]
+    )
+)
+
+(new button%
     [parent ignore-panel]
-    [label ""]
-    [init-value "John Doe"]
+    [label "✓"]
+    [callback (λ (button event) (printf (send cat-ignorada get-data (car (send cat-ignorada get-selections)))) (listar)) ]
+    ;;; [callback (λ (button event) (printf (number->string (car (send cat-ignorada get-selections)))) (listar)) ]
 )
 
 ; ============== Postar =================
@@ -119,6 +141,8 @@
 ; Listar posts
 (define (listar)
     (send timeline-panel change-children (λ(x) (foldl formata-post-gui '() (getLista posts))))
+    (send autor-ignorado set autorIgnorado)
+    (send cat-ignorada set catIgnorada)
 )
 
 ; Formato - GUI
@@ -149,6 +173,12 @@
         [parent p1]
         [label (autor item)]
     )
+    (new button%
+        [parent p1]
+        [label "🛇"]
+        [callback (λ (button event) (ignorarAutor (autor item)) (listar)) ]
+    )
+    
     (define p11 (new horizontal-panel% [parent p1] [alignment '(right top)]))
     (new message%
         [parent p11]
@@ -176,7 +206,15 @@
             [callback (λ (button event) (seta-categoria (id item) (send button get-value)) (listar))]
         )
         ; else
-        (new message% [parent p33] [label (categoria item)])
+        (begin 
+            (new message% [parent p33] [label (categoria item)])
+            (new button%
+                [parent p33]
+                [label "🛇"]
+                [callback (λ (button event) (ignorarCat (categoria item)) (listar)) ]
+            )
+            
+        )
     )
     (cons p acc)
 )
