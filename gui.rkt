@@ -160,14 +160,23 @@
         [label (texto item)]
     )
 
-    (new message%
+    (new button%
         [parent p3]
         [label (string-join (list "👍 " (number->string (likes item))) "")]
+        [callback (λ (button event) (like (id item)) (listar)) ]
     )
     (define p33 (new horizontal-panel% [parent p3] [alignment '(right top)]))
-    (new message%
-        [parent p33]
-        [label (categoria item)]
+    (if (equal? (categoria item) "Desconhecido")
+        ;then
+        (new combo-field%
+            [parent p33]
+            [label ""]
+            [init-value "Escolha a Categoria"]
+            [choices '("Tecnologia" "Cultura" "História" "Saúde" "Diversão")]
+            [callback (λ (button event) (seta-categoria (id item) (send button get-value)) (listar))]
+        )
+        ; else
+        (new message% [parent p33] [label (categoria item)])
     )
     (cons p acc)
 )

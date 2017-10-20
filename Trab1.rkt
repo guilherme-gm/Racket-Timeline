@@ -10,6 +10,8 @@
 (provide likes)
 (provide getLista)
 (provide postar)
+(provide like)
+(provide seta-categoria)
 
 (define posts
     ; ID TEXTO AUTOR DATA CATEGORIA LIKES
@@ -133,7 +135,7 @@
   (set! posts
           (map (λ (post)
                  (if (equal? (id post) postId)
-                     (list (id post) (texto post) (autor post) (dia post) categoria)
+                     (list (id post) (texto post) (autor post) (dia post) categoria (likes post))
                      post
                  )
                )
