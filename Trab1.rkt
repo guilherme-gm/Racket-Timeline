@@ -1,7 +1,15 @@
 #lang racket
 (require racket/trace)
-(require racket/include)
-(include gui.rkt)
+
+(provide posts)
+(provide id)
+(provide texto)
+(provide autor)
+(provide dia)
+(provide categoria)
+(provide likes)
+(provide getLista)
+(provide postar)
 
 (define posts
     ; ID TEXTO AUTOR DATA CATEGORIA LIKES
@@ -114,7 +122,7 @@
 ; Criar post
 (define (postar mensagem)
   (begin
-    (set! posts (reverse (cons (list nextId mensagem nome today "Desconhecido") (reverse posts))))
+    (set! posts (reverse (cons (list nextId mensagem nome today "Desconhecido" 0) (reverse posts))))
     (set! nextId (add1 nextId))
     (listar)
   )

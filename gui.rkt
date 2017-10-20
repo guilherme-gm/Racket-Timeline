@@ -1,5 +1,7 @@
 #lang racket/gui
+(require racket/trace)
 (require racket/gui/base)
+(require "Trab1.rkt")
 
 ; ============ Layout Geral ============
 ; Define o Frame
@@ -11,19 +13,34 @@
     )
 )
 
-; Divisor horizontal
-(define horiz-panel
-    (new horizontal-panel%	 
-   	 	[parent frame]
-        [alignment '(left top)]
+; Divisor vertical geral
+(define vert-panel1
+    (new vertical-panel%
+        [parent frame]
     )
+
 )
 
 ; Perfil
 (define prof-panel
+    (new horizontal-panel%
+        [parent vert-panel1]
+        [alignment '(left top)]
+    )
+)
+
+; Divisor horizontal
+(define horiz-panel
+    (new horizontal-panel%	 
+   	 	[parent vert-panel1]
+        [alignment '(left top)]
+    )
+)
+
+; Área de ignorados
+(define ignore-panel
     (new vertical-panel%
         [parent horiz-panel]
-        [alignment '(left top)]
     )
 )
 
@@ -47,6 +64,8 @@
     (new vertical-panel%
         [parent cont-panel]
         [min-height 450]
+        [stretchable-width 100]
+        [style '(vscroll)]
     )
 )
 
@@ -67,46 +86,93 @@
     [init-value "John Doe"]
 )
 
+; ============== Ignorados ==============
+(new text-field%
+    [parent ignore-panel]
+    [label ""]
+    [init-value "John Doe"]
+)
+
 ; ============== Postar =================
 ; Nova mensagem
-(new text-field%
-    [parent post-panel]
-    [label "Mensagem"]
-    [style '(multiple)]
+(define msg
+    (new text-field%
+        [parent post-panel]
+        [label "Mensagem"]
+        [style '(multiple)]
+    )
 )
+
 (new button%
     [parent post-panel]
     [label "Postar"]
-    [callback (λ (button event) (send timeline-panel change-children (λ(x) (list (cria-post "tese")))))]
+    [callback (λ (button event) (cria-post (send msg get-value)))]
 )
 
 ; ============ Timeline =================
 ; Nova mensagem
-(define (cria-post mensagem)
-    (new message%
-        [parent timeline-panel]
-        [label mensagem]
-    )
-)
-(new message%
-    [parent timeline-panel]
-    [label "Mensagem"]
-)
-(new message%
-    [parent timeline-panel]
-    [label "Mensagem"]
-)
-(new message%
-    [parent timeline-panel]
-    [label "Mensagem"]
-)
-(new message%
-    [parent timeline-panel]
-    [label "Mensagem"]
-)
-(new message%
-    [parent timeline-panel]
-    [label "Mensagem"]
+(define (cria-post post)
+    (postar post)
+    (listar)
 )
 
+; Listar posts
+(define (listar)
+    (send timeline-panel change-children (λ(x) (foldl formata-post-gui '() (getLista posts))))
+)
+
+; Formato - GUI
+(define (formata-post-gui item acc)
+    (define p
+        (new vertical-panel%
+            [parent timeline-panel]
+            [style '(border)]
+        )
+    )
+    (define p1
+        (new horizontal-panel%
+            [parent p]
+        )
+    )
+    (define p2
+        (new horizontal-panel%
+            [parent p]
+        )
+    )
+    (define p3
+        (new horizontal-panel%
+            [parent p]
+        )
+    )
+    
+    (new message%
+        [parent p1]
+        [label (autor item)]
+    )
+    (define p11 (new horizontal-panel% [parent p1] [alignment '(right top)]))
+    (new message%
+        [parent p11]
+        [label (number->string (dia item))]
+    )
+
+    (new message%
+        [parent p2]
+        [label (texto item)]
+    )
+
+    (new message%
+        [parent p3]
+        [label (string-join (list "👍 " (number->string (likes item))) "")]
+    )
+    (define p33 (new horizontal-panel% [parent p3] [alignment '(right top)]))
+    (new message%
+        [parent p33]
+        [label (categoria item)]
+    )
+    (cons p acc)
+)
+
+
+; Inicialização
 (send frame show #t)
+(listar)
