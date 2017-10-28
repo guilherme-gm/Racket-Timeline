@@ -3,6 +3,8 @@
 (require racket/gui/base)
 (require "Trab1.rkt")
 
+(disableConsole)
+
 ; ============ Layout Geral ============
 ; Define o Frame
 (define frame
@@ -94,11 +96,11 @@
     )
 )
 
-;;; (new button%
-;;;     [parent p1]
-;;;     [label "✓"]
-;;;     [callback (λ (button event) (designorarAutor (autor item)) (listar)) ]
-;;; )
+(new button%
+    [parent ignore-panel]
+    [label "✓"]
+    [callback (λ (button event) (designorarAutor (send autor-ignorado get-data (car (send autor-ignorado get-selections)))) (listar))]
+)
 
 (define cat-ignorada
     (new list-box%
@@ -111,8 +113,7 @@
 (new button%
     [parent ignore-panel]
     [label "✓"]
-    [callback (λ (button event) (printf (send cat-ignorada get-data (car (send cat-ignorada get-selections)))) (listar)) ]
-    ;;; [callback (λ (button event) (printf (number->string (car (send cat-ignorada get-selections)))) (listar)) ]
+    [callback (λ (button event) (designorarCat (send cat-ignorada get-data (car (send cat-ignorada get-selections)))) (listar))]
 )
 
 ; ============== Postar =================
@@ -143,6 +144,8 @@
     (send timeline-panel change-children (λ(x) (foldl formata-post-gui '() (getLista posts))))
     (send autor-ignorado set autorIgnorado)
     (send cat-ignorada set catIgnorada)
+    (foldl (λ(x acc) (if (void? (send cat-ignorada set-data acc x)) (add1 acc) (add1 acc))) 0 catIgnorada)
+    (foldl (λ(x acc) (if (void? (send autor-ignorado set-data acc x)) (add1 acc) (add1 acc))) 0 autorIgnorado)
 )
 
 ; Formato - GUI

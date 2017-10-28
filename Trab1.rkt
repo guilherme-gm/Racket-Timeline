@@ -15,9 +15,13 @@
 (provide ignorarCat)
 (provide designorarCat)
 (provide ignorarAutor)
+(provide designorarAutor)
 (provide autorIgnorado)
 (provide catIgnorada)
 (provide nome)
+(provide disableConsole)
+
+(define useConsole #t)
 
 (define posts
     ; ID TEXTO AUTOR DATA CATEGORIA LIKES
@@ -105,7 +109,9 @@
 )
 
 ; Listar
-(define (listar) (display (foldl formata-post "" (getLista posts))))
+(define (listar) (if useConsole (display (foldl formata-post "" (getLista posts))) (foldl formata-post "" (getLista posts))))
+
+(define (disableConsole) (set! useConsole #f))
 
 (define (formata-post item acc)
   (string-join (list acc
@@ -133,6 +139,15 @@
 
 ; Ignorar autor
 (define (ignorarAutor autor) (begin (set! autorIgnorado (append (list autor) autorIgnorado)) (listar)))
+
+; Designirar Autor
+(define (designorarAutor autor)
+  (set! autorIgnorado
+    (foldl (λ (x acc) (if (equal? x autor) acc (append (list x) acc))) '() autorIgnorado
+    )
+  )
+  (listar)
+)
 
 ; Criar post
 (define (postar mensagem)
